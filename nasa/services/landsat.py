@@ -108,16 +108,21 @@ def ndvi(redfile: object, nirfile: object) -> IO:
 
 def green(x: float, y: float, day: date) -> float:
     geometry = circle(x, y, 0.01)
+
     item = search(geometry, day)
     red, nir = item.asset('B4'), item.asset('B5')
     red, nir = red['href'], nir['href']
+
     with rasterio.open(red) as src:
         red_file = mask(geometry, src)
     with rasterio.open(nir) as src:
         nir_file = mask(geometry, src)
+
     ndvi_file = ndvi(red_file, nir_file)
     with rasterio.open(ndvi_file.name) as src:
         data = src.read()
+
     size = np.size(data)
     vegetation = (data > 0.2).sum()
+
     return vegetation / size
