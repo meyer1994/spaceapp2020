@@ -4,7 +4,7 @@ from datetime import date
 
 import httpx
 
-KEY = os.environ['OPENWEATHER_KEY']
+KEY = os.getenv('OPENWEATHER_KEY')
 URL = 'http://history.openweathermap.org/data/2.5/history/city'
 
 
