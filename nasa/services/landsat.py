@@ -11,6 +11,7 @@ import rasterio.warp
 import rasterio.features
 import numpy as np
 from satsearch import Search
+from fastapi import HTTPException
 from shapely.geometry import Point
 
 URL = 'https://earth-search.aws.element84.com/v0'
@@ -109,9 +110,12 @@ def ndvi(redfile: object, nirfile: object) -> IO:
 def green(x: float, y: float, day: date) -> float:
     geometry = circle(x, y, 0.01)
 
-    item = search(geometry, day)
-    red, nir = item.asset('B4'), item.asset('B5')
-    red, nir = red['href'], nir['href']
+    try:
+        item = search(geometry, day)
+        red, nir = item.asset('B4'), item.asset('B5')
+        red, nir = red['href'], nir['href']
+    except StopIteration:
+        raise HTTPException(status_code=404, detail='Image not found for date')
 
     with rasterio.open(red) as src:
         red_file = mask(geometry, src)
