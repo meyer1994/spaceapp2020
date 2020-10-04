@@ -85,9 +85,9 @@ def mask(geometry: dict, src: object) -> IO:
 def ndvi(redfile: object, nirfile: object) -> IO:
     logger.info('Reading data')
     with rasterio.open(redfile.name) as src:
-        red = src.read()
+        red = src.read().astype('float32')
     with rasterio.open(nirfile.name) as src:
-        nir = src.read()
+        nir = src.read().astype('float32')
 
     logger.info('Calculating NDVI')
     top = (nir - red).astype('float32')
@@ -107,13 +107,39 @@ def ndvi(redfile: object, nirfile: object) -> IO:
     return temp
 
 
+def ndwi(grnfile: object, nirfile: object) -> IO:
+    logger.info('Reading data')
+    with rasterio.open(grnfile.name) as src:
+        grn = src.read().astype('float32')
+    with rasterio.open(nirfile.name) as src:
+        nir = src.read().astype('float32')
+
+    logger.info('Calculating NDVI')
+    top = (grn - nir).astype('float32')
+    bot = (grn + nir).astype('float32')
+    with np.errstate(invalid='ignore'):
+        ndvi = np.where(bot == 0.0, 0.0, top / bot).astype('float32')
+
+    logger.info('Writing NDVI')
+    with rasterio.open(grnfile.name) as red:
+        meta = copy.deepcopy(red.profile)
+        meta.update(dtype='float32')
+
+    temp = tempfile.NamedTemporaryFile(suffix='.tif')
+    with rasterio.open(temp.name, 'w', **meta) as dst:
+        dst.write(ndvi)
+
+    return temp
+
+
+
 def green(x: float, y: float, day: date) -> float:
     geometry = circle(x, y, 0.01)
 
     try:
         item = search(geometry, day)
-        red, nir = item.asset('B4'), item.asset('B5')
-        red, nir = red['href'], nir['href']
+        red, nir, grn = item.asset('B4'), item.asset('B5'), item.asset('B3')
+        red, nir, grn = red['href'], nir['href'], grn['href']
     except StopIteration:
         raise HTTPException(status_code=404, detail='Image not found for date')
 
@@ -121,12 +147,24 @@ def green(x: float, y: float, day: date) -> float:
         red_file = mask(geometry, src)
     with rasterio.open(nir) as src:
         nir_file = mask(geometry, src)
+    with rasterio.open(grn) as src:
+        grn_file = mask(geometry, src)
 
     ndvi_file = ndvi(red_file, nir_file)
     with rasterio.open(ndvi_file.name) as src:
         data = src.read()
-
     size = np.size(data)
     vegetation = (data > 0.2).sum()
+    vegetation = vegetation / size
 
-    return vegetation / size
+    ndwi_file = ndwi(grn_file, nir_file)
+    with rasterio.open(ndwi_file.name) as src:
+        data = src.read()
+    size = np.size(data)
+    water = (data > 0.0).sum()
+    water = water / size
+
+    return {
+        'vegetation': vegetation,
+        'water': water,
+    }

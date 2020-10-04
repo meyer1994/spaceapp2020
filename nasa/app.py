@@ -12,7 +12,7 @@ app = FastAPI()
 
 @app.get('/green')
 async def green(x: float, y: float, day: date):
-    return {'green': landsat.green(x, y, day)}
+    return landsat.green(x, y, day)
 
 
 @app.get('/temperature')
