@@ -31,3 +31,8 @@ def aerosol(x: float, y: float, day: date = None):
 def nitrogen(x: float, y: float, day: date = None):
     filename = 'nasa/data/AURA_NO2_M_2020-09-01_rgb_3600x1800.FLOAT.TIFF'
     return lonlat(x, y, filename)
+
+
+def uvindex(x: float, y: float, day: date = None):
+    filename = 'nasa/data/AURA_UVI_CLIM_M_2010-12-01_rgb_720x360.FLOAT.TIFF'
+    return lonlat(x, y, filename)

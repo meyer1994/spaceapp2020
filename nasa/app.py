@@ -13,15 +13,16 @@ app = FastAPI()
 
 @app.get('/green')
 async def get_green(x: float, y: float, day: date):
-    carbon = datasets.carbon(x, y)
-    aerosol = datasets.aerosol(x, y)
-    nitrogen = datasets.nitrogen(x, y)
-    green = landsat.green(x, y, day)
+    return landsat.green(x, y, day)
+
+
+@app.get('/datasets')
+async def get_datasets(x: float, y: float, day: date = None):
     return {
-        'green': green,
-        'carbon_monoxide': carbon,
-        'aerosol_particles': aerosol,
-        'nitrogen_dioxide': nitrogen,
+        'carbon_monoxide': datasets.carbon(x, y),
+        'aerosol_particles': datasets.aerosol(x, y),
+        'nitrogen_dioxide': datasets.nitrogen(x, y),
+        'uvindex': datasets.uvindex(x, y),
     }
 
 
