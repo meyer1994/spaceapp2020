@@ -65,5 +65,35 @@ http GET https://spaceapp2020.herokuapp.com/temperature x==-48.422 y==-27.573 da
 }
 ```
 
-[1]: https://www.gdal.org/
-[2]: https://www.worldweatheronline.com/
+Of course, instead of using an commercial API as this one we could have used
+NASA's datasets on earth temperature. But we choose to do so to save on time
+for the hackathon.
+
+
+## Deployment
+We have used [Heroku][3] as our hosting service. Mainly because of how easy is
+to use it. To deploy, you will need to install [Heroku's CLI][4]. You will also
+need an World Weather Online api key, if you want to use the temperature
+endpoint. If not, you can just use the currently deployed version. Its url is:
+
+```
+https://spaceapp2020.herokuapp.com/
+```
+
+To set the World Weather Online API key, just use:
+
+```bash
+heroku config:set OPENWEATHER_KEY="<YOUR_KEY>"
+```
+
+We use [Docker][5] container deployment. Not because it is easier, but because
+we must. Heroku's Dynos do not come with GDAL installed. But they allow you to
+send dockerfiles that are built and used to run your application. So we use a
+dockerfile that has python and gdal already included.
+
+
+[1]: https://gdal.org/
+[2]: https://worldweatheronline.com/
+[3]: https://heroku.com/
+[4]: https://devcenter.heroku.com/articles/heroku-cli
+[5]: https://docker.com/
