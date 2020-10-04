@@ -132,7 +132,6 @@ def ndwi(grnfile: object, nirfile: object) -> IO:
     return temp
 
 
-
 def green(x: float, y: float, day: date) -> float:
     geometry = circle(x, y, 0.01)
 
