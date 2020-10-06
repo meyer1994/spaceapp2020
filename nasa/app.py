@@ -11,6 +11,18 @@ from nasa.services import datasets
 app = FastAPI()
 
 
+@app.get('/')
+async def home():
+    return {
+        'message': '2020 NASA SpaceApps challenge',
+        'examples': {
+            'green': 'https://spaceapp2020.herokuapp.com/green?x=-48.422&y=-27.573&day=2020-09-11',
+            'temperature': 'https://spaceapp2020.herokuapp.com/temperature?x=-48.422&y=-27.573&day=2020-09-11',
+            'datasets': 'https://spaceapp2020.herokuapp.com/datasets?x=-48.422&y=-27.573',
+        }
+    }
+
+
 @app.get('/green')
 async def get_green(x: float, y: float, day: date):
     return landsat.green(x, y, day)
