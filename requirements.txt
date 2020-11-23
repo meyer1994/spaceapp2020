@@ -3,5 +3,5 @@ fastapi==0.61.2
 httpx==0.16.1
 rasterio==1.1.8
 Shapely==1.7.1
-uvicorn==0.12.2
+uvicorn==0.12.3
 sat-search==0.3.0
