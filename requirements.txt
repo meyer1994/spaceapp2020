@@ -1,5 +1,5 @@
 boto3==1.16.40
-fastapi==0.62.0
+fastapi==0.63.0
 httpx==0.16.1
 rasterio==1.1.8
 Shapely==1.7.1
