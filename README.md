@@ -1,5 +1,7 @@
 # 2020 Challenge
 
+[![build](https://github.com/meyer1994/spaceapp2020/actions/workflows/build.yml/badge.svg)](https://github.com/meyer1994/spaceapp2020/actions/workflows/build.yml)
+
 Code used in SpaceApps 2020 NASA Hackaton
 
 ## Install
