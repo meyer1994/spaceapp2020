@@ -1,4 +1,4 @@
-boto3==1.17.60
+boto3==1.17.61
 fastapi==0.63.0
 httpx==0.18.1
 rasterio==1.2.3
