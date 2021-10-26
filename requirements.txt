@@ -2,6 +2,6 @@ boto3==1.19.3
 fastapi==0.70.0
 httpx==0.20.0
 rasterio==1.2.10
-Shapely==1.7.1
+Shapely==1.8.0
 uvicorn==0.15.0
 sat-search==0.3.0
